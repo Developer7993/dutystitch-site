@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Etsy's tariff calculator and variation listings | Dutystitch</title>
+<meta name="description" content="Etsy's US tariff calculator is not available for listings with price variations. A method for working out each variation's US price.">
+<link rel="canonical" href="https://developer7993.github.io/dutystitch-site/articles/etsy-tariff-calculator-variations/">
+<meta property="og:title" content="Etsy's tariff calculator and variation listings">
+<meta property="og:description" content="Etsy's US tariff calculator is not available for listings with price variations. A method for working out each variation's US price.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://developer7993.github.io/dutystitch-site/og.png">
+<meta property="og:url" content="https://developer7993.github.io/dutystitch-site/articles/etsy-tariff-calculator-variations/">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Why Etsy's tariff calculator doesn't work on variation listings, and what to do","description":"Etsy's US tariff calculator is not available for listings with price variations. A method for working out each variation's US price.","mainEntityOfPage":"https://developer7993.github.io/dutystitch-site/articles/etsy-tariff-calculator-variations/","author":{"@type":"Organization","name":"Dutystitch"},"publisher":{"@type":"Organization","name":"Dutystitch"}}</script>
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#0F6B5C;--teal-dark:#0A4F44;--ink:#16232E;--slate:#52606B;--paper:#FAF7F0;--card:#fff;--twine:#E3DDCF;--note:#FFF4D6;--note-ink:#5C4200;
+--display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--body:"Instrument Sans","Segoe UI",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.65 var(--body);-webkit-font-smoothing:antialiased}
+a{color:var(--teal);text-underline-offset:3px}a:hover{color:var(--teal-dark)}:focus-visible{outline:3px solid var(--teal);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}.col{max-width:44rem}
+.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;background:var(--card);padding:8px 12px;z-index:10}
+.draft{background:var(--note);color:var(--note-ink);font-size:.92rem;font-weight:600;padding:9px 0}
+.top{padding:16px 0;border-bottom:1px solid var(--twine);background:var(--paper)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:700 1.4rem/1 var(--display);letter-spacing:-.03em}.brand svg{width:30px;height:30px}
+.top nav{display:flex;align-items:center;gap:22px}.top nav a.link{color:var(--ink);text-decoration:none;font-weight:500;font-size:.98rem}.top nav a.link:hover{text-decoration:underline}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:12px;background:var(--teal);color:#fff;font:600 .98rem/1 var(--body);text-decoration:none}.btn:hover{background:var(--teal-dark);color:#fff}
+main{padding:44px 0 72px}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,4.6vw,3rem);font-weight:700;max-width:22ch}
+h2{font-size:1.5rem;font-weight:700;margin:40px 0 10px}h3{font-size:1.15rem;font-weight:600;margin:26px 0 6px}
+p{margin:0 0 16px}ul,ol{margin:0 0 16px;padding-left:22px}li{margin:6px 0}
+.crumb{font-size:.95rem;margin-bottom:18px}.crumb a{color:var(--slate)}
+.checked{color:var(--slate);font-size:.95rem;margin-top:14px}.checked em{font-style:normal}
+.disclaimer{margin-top:36px;padding-top:18px;border-top:2px dashed var(--twine);color:var(--slate);font-size:.97rem}.disclaimer em{font-style:normal}
+code{font:500 .92em var(--mono);background:#F2EEE3;padding:1px 5px;border-radius:4px}pre{background:#F2EEE3;padding:14px;border-radius:10px;overflow-x:auto}pre code{background:none;padding:0}
+blockquote{margin:0 0 16px;padding:2px 0 2px 18px;border-left:3px solid var(--teal)}
+.scroll{overflow-x:auto;margin:0 0 18px;border:1px solid var(--twine);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.95rem;line-height:1.45}th,td{text-align:left;padding:10px 14px;border-top:1px solid var(--twine);vertical-align:top}th{border-top:0;color:var(--slate);font-weight:600;font-size:.88rem}
+.list{list-style:none;padding:0;margin:26px 0 0}.list li{padding:20px 0;border-top:1px solid var(--twine)}.list a{font:600 1.25rem/1.25 var(--display);text-decoration:none;color:var(--ink)}.list a:hover{color:var(--teal)}.list p{color:var(--slate);margin:6px 0 0;font-size:1rem}
+footer{background:var(--ink);color:#C9D1D6;padding:40px 0;font-size:.93rem}footer a{color:#fff}footer .brand{color:#fff}footer p{max-width:52rem;margin:14px 0 0}
+@media (max-width:640px){.top nav a.link{display:none}body{font-size:17px}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../../" aria-label="Dutystitch home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 4h30a8 8 0 0 1 8 8v40a8 8 0 0 1-8 8H12a8 8 0 0 1-8-8V22z" fill="#0F6B5C"/><path d="M25 12h24a3 3 0 0 1 3 3v34a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3V25z" fill="none" stroke="#FAF7F0" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 6"/><circle cx="23" cy="23" r="4" fill="#E8A317"/></svg>dutystitch</a>
+  <nav aria-label="Main"><a class="link" href="../../articles/">Articles</a><a class="btn" href="../../#join">Join the waitlist</a></nav>
+</div></header>
+<main id="main"><div class="wrap"><div class="col">
+<p class="crumb"><a href="../">Articles</a></p>
+<h1>Why Etsy's tariff calculator doesn't work on variation listings, and what to do</h1>
+<p class="checked"><em>Last checked: 14 November 2026.</em></p>
+<p>If you sell from outside the United States and your listings have options at different prices, such as ring sizes, print sizes or bundle sizes, you have probably found that Etsy's US tariff calculator won't open for them. This is not a fault in your shop. It is how the tool works at the moment.</p>
+<h2>What Etsy says</h2>
+<p>Etsy's <a href="https://help.etsy.com/hc/en-us/articles/40309848355735-How-to-Use-Etsy-s-US-Estimated-Tariffs-Calculator" rel="noopener">help page for the US Estimated Tariffs Calculator</a> says: &quot;It's currently unavailable for listings with price variations.&quot; It also says its estimates &quot;reflect official government tariffs and do not include additional fees your carrier may charge&quot;, and that &quot;Etsy does not guarantee the accuracy or reliability of these estimates.&quot; The calculator is used inside a single listing's editor, so it handles one listing at a time.</p>
+<p>So for a listing with priced variations, you have to work out the US price for each option yourself.</p>
+<h2>The sum, one variation at a time</h2>
+<p>The aim is simple: a sale to a US buyer should leave you with the same money as a sale at home.</p>
+<p>For each variation you need four numbers:</p>
+<ol><li><strong>Home price</strong> of that variation.</li><li><strong>Fee rate</strong>: Etsy's fees as a share of the price. Use your own figure from your payment account.</li><li><strong>Duty rate</strong> for your product and country, as a percentage. This is the hard part; see &quot;Where the duty rate comes from&quot; below.</li><li><strong>Carrier's duty-handling fee</strong> per parcel, if your carrier charges one.</li></ol>
+<p>Then:</p>
+<blockquote><p>US price = (home price × (1 − fee rate) + carrier fee) ÷ (1 − fee rate − duty rate)</p></blockquote>
+<p>Why divide, and not just add the duty on top? Because the duty is charged on the higher US price, and Etsy's fees are charged on it too. Adding duty to the home price leaves you short.</p>
+<h2>A worked example (made-up numbers)</h2>
+<p>A print listing with three sizes priced £24, £30 and £36. Assume fees of 10%, duty of 10% and a £3 carrier fee. These numbers are made up for illustration; yours will differ.</p>
+<div class="scroll"><table><thead><tr><th>Variation</th><th>Home price</th><th>US price</th></tr></thead><tbody><tr><td>Small</td><td>£24.00</td><td>£30.75</td></tr><tr><td>Medium</td><td>£30.00</td><td>£37.50</td></tr><tr><td>Large</td><td>£36.00</td><td>£44.25</td></tr></tbody></table></div>
+<p>Check the middle one: at £37.50, fees take £3.75 and duty takes £3.75, and the carrier takes £3. That leaves £27.00, the same as a £30 home sale after 10% fees.</p>
+<h2>A spreadsheet layout that works</h2>
+<p>One row per variation, with these columns: listing, variation, home price, fee rate, duty rate, carrier fee, US price. Put the formula in the last column and copy it down. When a rate changes, change one cell and every price updates. Keep the date you last checked the duty rate at the top of the sheet.</p>
+<h2>Where the duty rate comes from</h2>
+<p>The rate depends on what the item is (its tariff code), where it was made, and any additional tariffs in force for that country. The official source for US rates is the <a href="https://hts.usitc.gov/" rel="noopener">Harmonized Tariff Schedule</a>, which you can search by keyword. Additional tariffs are published in the Federal Register and can change. If you are unsure which code fits your product, a customs broker can tell you.</p>
+<h2>Limits of this method</h2>
+<p>It does not cover duty charged on shipping, currency-conversion costs, VAT differences between home and export sales, or duties charged per kilogram or per item. It is an estimate, not customs advice, and you remain responsible for what you declare.</p>
+<h2>If you'd rather not do this by hand</h2>
+<p>We are building Dutystitch to do this for a whole shop at once, variations included. It is in development and there is nothing to buy. If that would help you, <a href="../../?src=article-a1#join">join the waitlist</a>.</p>
+<p class="disclaimer"><em>This is general information, not customs or legal advice.</em></p>
+</div></div></main>
+<footer><div class="wrap">
+  <a class="brand" href="../../">dutystitch</a>
+  <p>Dutystitch is a product in development. It is not affiliated with or endorsed by Etsy, Inc. "Etsy" is a trademark of Etsy, Inc. Nothing on this page is customs, tax or legal advice.</p>
+  <p><a href="../../privacy.html">Privacy notice</a> · <a href="../../terms.html">Terms of use</a></p>
+</div></footer>
+</body>
+</html>
