@@ -423,11 +423,17 @@ footer p{max-width:52rem}
 </footer>
 
 <script>
-// Waitlist storage: a Formspree form. Leave url empty to switch the form off.
-// Switched off on 14 Nov 2026 for publishing, until the privacy notice blanks and a contact address are filled.
-const WAITLIST = { url: "" };
+// Waitlist storage: Supabase project "dutystitch" (London), table public.waitlist_signups,
+// written only through the function public.join_waitlist (one row per email; the browser cannot read rows).
+// The key below is the project's publishable key, which is meant to be public.
+// Registration switched ON 14 Nov 2026 after the owner approved the privacy notice. To switch off: enabled: false
+const WAITLIST = {
+  enabled: true,
+  url: "https://bkkpnlujcfichqrfplzk.supabase.co/rest/v1/rpc/join_waitlist",
+  key: "sb_publishable_nbwulaFWS1XvHEGul8yDfg_W23uWOXy"
+};
 
-if (!WAITLIST.url) {
+if (!WAITLIST.enabled) {
   const closed = document.createElement("div");
   closed.className = "msg";
   closed.setAttribute("role", "status");
@@ -439,7 +445,7 @@ if (!WAITLIST.url) {
   });
   document.getElementById("contact-line").textContent = "A contact address will be added here when sign-ups open.";
 }
-const CONTACT_EMAIL = "";
+const CONTACT_EMAIL = "dutystitch@gmail.com";
 
 if (CONTACT_EMAIL) {
   document.getElementById("contact-line").innerHTML =
@@ -460,26 +466,25 @@ form.addEventListener("submit", async (e) => {
   if (!f.get("ships_to_us")) { show("err", "Tell us whether you ship to US buyers."); return; }
   if (!f.get("listing_count")) { show("err", "Choose roughly how many listings you have."); form.listing_count.focus(); return; }
   if (!f.get("consent")) { show("err", "Tick the consent box so we can store your answers and email you."); return; }
-  if (!WAITLIST.url) { show("err", "The waitlist is not connected yet, so nothing was saved."); return; }
+  if (!WAITLIST.enabled) { show("err", "The waitlist is not open yet, so nothing was saved."); return; }
 
   const btn = form.querySelector("button");
   btn.disabled = true;
   try {
     const res = await fetch(WAITLIST.url, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: { "Content-Type": "application/json", apikey: WAITLIST.key },
       body: JSON.stringify({
-        _subject: "New Dutystitch waitlist sign-up",
-        source: new URLSearchParams(location.search).get("src") || "direct",
-        consent_wording: "v1 (Nov 2026)",
-        email,
-        country: f.get("country"),
-        ships_to_us: f.get("ships_to_us"),
-        listing_count: f.get("listing_count"),
-        shop_url: (f.get("shop_url") || "").trim() || null,
-        biggest_difficulty: (f.get("biggest_difficulty") || "").trim() || null,
-        wants_interview: !!f.get("wants_interview"),
-        consent: true
+        p_email: email,
+        p_country: f.get("country"),
+        p_ships_to_us: f.get("ships_to_us"),
+        p_listing_count: f.get("listing_count"),
+        p_shop_url: (f.get("shop_url") || "").trim() || null,
+        p_biggest_difficulty: (f.get("biggest_difficulty") || "").trim() || null,
+        p_wants_interview: !!f.get("wants_interview"),
+        p_source: (new URLSearchParams(location.search).get("src") || "direct").slice(0, 40),
+        p_consent: true,
+        p_consent_wording: "v1 (Nov 2026)"
       })
     });
     if (!res.ok) { throw new Error(String(res.status)); }
